@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+    <title>VB to SQL</title>
+    <script>
+        function onSubmit() {
+            let input = document.getElementById("input").value;
+            console.log(input);
+            let output = input.split(/\r\n|\r|\n/g).map(arr => {
+                if (arr.indexOf('"') === -1) {
+                    return "";
+                }
+                return arr.split(/=[\s\w]+&\s+"|&=\s+"|=\s+"/g)[1]
+            }).map(arr => {
+                arr = arr.trim()
+                return arr.replace(/^"/g, "").replace(/"$/g, "")
+            }).join("\r\n");
+            document.getElementById("output").innerHTML = output;
+        }
+        function onSubmit2() {
+            let input = document.getElementById("input").value;
+            console.log(input);
+            let output = input.split(/\r\n|\r|\n/g).map(arr => {
+                if (arr.indexOf('"') === -1) {
+                    return "";
+                }
+                let temp = arr.split('"');
+                temp.shift();
+                return temp.join("");
+            }).map(arr => {
+                arr = arr.trim()
+                return arr.replace(/^"/g, "").replace(/"$/g, "").replace(/&\s*/g, "")
+            }).join("\r\n");
+            document.getElementById("output").innerHTML = output;
+        }
+        function toVB() {
+            let input = document.getElementById("input").value;
+            let variable = document.getElementById("variable").value;
+            let output = input.split(/\r\n|\r|\n/g).map((line, ind) => {
+                console.log(line);
+                if (ind) {
+                    return `${variable} &= "${line} "`
+                }
+                return `${variable} = "${line} "`
+            }).join("\r\n")
+            document.getElementById("output").innerHTML = output;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+
+        <form>
+            <div class="form-group">
+                <label>Enter your code:</label>
+                <textarea rows="10" class="form-control h-100" id="input"></textarea>
+            </div>
+            <!-- <button type="button" class="btn btn-primary" onclick="onSubmit()">VB to SQL</button> -->
+            <button type="button" class="btn btn-primary" onclick="onSubmit2()">VB to SQL2</button>
+            <div class="form-group">
+                <label>VB variable:</label>
+                <input id="variable" value="sSQL">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="toVB()">SQL to VB</button>
+        </form>
+        <label>Output:</label>
+        <p style="white-space: pre-wrap;" id="output"></p>
+    </div>
+</body>
+
+</html>
