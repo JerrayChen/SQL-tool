@@ -41,6 +41,23 @@
             }).join("\r\n");
             document.getElementById("output").innerHTML = output;
         }
+        onSubmitSB = () => {
+            let input = document.getElementById("input").value;
+            let output = input.split(/\r\n|\r|\n/g).map(arr => {
+                if (arr.toLowerCase().indexOf('append') === -1) {
+                    return "";
+                }
+                let temp = arr.split('"');
+                temp.shift();
+                temp.pop();
+                return temp.join("");
+                // return temp[1];
+            }).map(arr => {
+                arr = arr.trim()
+                return arr.replace(/^"/g, "").replace(/"$/g, "").replace(/&\s*/g, "")
+            }).join("\r\n");
+            document.getElementById("output").innerHTML = output;
+        }
         function toVB() {
             let input = document.getElementById("input").value;
             let variable = document.getElementById("variable").value;
@@ -50,6 +67,18 @@
                     return `${variable} &= "${line} "`
                 }
                 return `${variable} = "${line} "`
+            }).join("\r\n")
+            document.getElementById("output").innerHTML = output;
+        }
+        function toVBSB(isWith, isFormat) {
+            let input = document.getElementById("input").value;
+            let variable = document.getElementById("variable").value;
+            let output = input.split(/\r\n|\r|\n/g).map((line, ind) => {
+                console.log(line);
+                // if (ind) {
+                //     return `${variable} &= "${line} "`
+                // }
+                return `${isWith ? "" : variable}.${isFormat ? "AppendFormat" : "Append"}(" ${line} ")`
             }).join("\r\n")
             document.getElementById("output").innerHTML = output;
         }
@@ -66,11 +95,26 @@
             </div>
             <!-- <button type="button" class="btn btn-primary" onclick="onSubmit()">VB to SQL</button> -->
             <button type="button" class="btn btn-primary" onclick="onSubmit2()">VB to SQL</button>
+            <button type="button" class="btn btn-primary" onclick="onSubmitSB()">VB to SQL(string builder)</button>
             <div class="form-group">
                 <label>VB variable:</label>
                 <input id="variable" value="sSQL">
             </div>
-            <button type="button" class="btn btn-primary" onclick="toVB()">SQL to VB</button>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="toVB()">SQL to VB</button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="toVBSB(true,false)">SQL to VB:
+                    (with).append</button>
+                <button type="button" class="btn btn-primary" onclick="toVBSB(true,true)">SQL to VB:
+                    (with).appendformat</button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="toVBSB(false,false)">SQL to VB:
+                    sb.append</button>
+                <button type="button" class="btn btn-primary" onclick="toVBSB(false,true)">SQL to VB:
+                    sb.appendformat</button>
+            </div>
         </form>
         <label>Output:</label>
         <p style="white-space: pre-wrap;" id="output"></p>
