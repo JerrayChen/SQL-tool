@@ -24,6 +24,7 @@
                 return arr.replace(/^"/g, "").replace(/"$/g, "")
             }).join("\r\n");
             document.getElementById("output").innerHTML = output;
+            copyToClipboard()
         }
         function onSubmit2() {
             let input = document.getElementById("input").value;
@@ -40,6 +41,7 @@
                 return arr.replace(/^"/g, "").replace(/"$/g, "").replace(/&\s*/g, "")
             }).join("\r\n");
             document.getElementById("output").innerHTML = output;
+            copyToClipboard()
         }
         onSubmitSB = () => {
             let input = document.getElementById("input").value;
@@ -57,6 +59,7 @@
                 return arr.replace(/^"/g, "").replace(/"$/g, "").replace(/&\s*/g, "")
             }).join("\r\n");
             document.getElementById("output").innerHTML = output;
+            copyToClipboard()
         }
         function toVB() {
             let input = document.getElementById("input").value;
@@ -69,6 +72,20 @@
                 return `${variable} = "${line} "`
             }).join("\r\n")
             document.getElementById("output").innerHTML = output;
+            copyToClipboard()
+        }
+        function toCS() {
+            let input = document.getElementById("input").value;
+            let variable = document.getElementById("variable").value;
+            let output = input.split(/\r\n|\r|\n/g).map((line, ind) => {
+                console.log(line);
+                if (ind) {
+                    return `${variable} += "${line} ";`
+                }
+                return `${variable} = "${line} ";`
+            }).join("\r\n")
+            document.getElementById("output").innerHTML = output;
+            copyToClipboard()
         }
         function toVBSB(isWith, isFormat) {
             let input = document.getElementById("input").value;
@@ -81,6 +98,14 @@
                 return `${isWith ? "" : variable}.${isFormat ? "AppendFormat" : "Append"}(" ${line} ")`
             }).join("\r\n")
             document.getElementById("output").innerHTML = output;
+            copyToClipboard()
+        }
+        function copyToClipboard(){
+            let output = document.getElementById("output")
+            let feedback = document.getElementById("feedback")
+            navigator.clipboard.writeText(output.innerHTML);
+            feedback.innerHTML = 'Copied to clipboard!'
+            setInterval(() => { feedback.innerHTML = "" }, 3 * 1000)
         }
     </script>
 </head>
@@ -99,6 +124,7 @@
             <div class="form-group">
                 <label>VB variable:</label>
                 <input id="variable" value="sSQL">
+                <span class="text-danger" id="feedback"></span>
             </div>
             <div>
                 <button type="button" class="btn btn-primary" onclick="toVB()">SQL to VB</button>
@@ -114,6 +140,9 @@
                     sb.append</button>
                 <button type="button" class="btn btn-primary" onclick="toVBSB(false,true)">SQL to VB:
                     sb.appendformat</button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="toCS()">SQL to C#</button>
             </div>
         </form>
         <label>Output:</label>
