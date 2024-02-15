@@ -43,6 +43,24 @@
             document.getElementById("output").innerHTML = output;
             copyToClipboard()
         }
+        function onSubmitCS() {
+            let input = document.getElementById("input").value;
+            console.log(input);
+            let output = input.split(/\r\n|\r|\n/g).map(arr => {
+                if (arr.indexOf('"') === -1) {
+                    return "";
+                }
+                let temp = arr.split('"');
+                temp.shift(); // drop sql += 
+                temp.pop(); // drop ;
+                return temp.join("");
+            }).map(arr => {
+                arr = arr.trim()
+                return arr.replace(/^"/g, "").replace(/"$/g, "").replace(/&\s*/g, "")
+            }).join("\r\n");
+            document.getElementById("output").innerHTML = output;
+            copyToClipboard()
+        }
         onSubmitSB = () => {
             let input = document.getElementById("input").value;
             let output = input.split(/\r\n|\r|\n/g).map(arr => {
@@ -120,6 +138,7 @@
             </div>
             <!-- <button type="button" class="btn btn-primary" onclick="onSubmit()">VB to SQL</button> -->
             <button type="button" class="btn btn-primary" onclick="onSubmit2()">VB to SQL</button>
+            <button type="button" class="btn btn-info" onclick="onSubmitCS()">C# to SQL</button>
             <button type="button" class="btn btn-primary" onclick="onSubmitSB()">VB to SQL(string builder)</button>
             <div class="form-group">
                 <label>VB variable:</label>
@@ -142,7 +161,7 @@
                     sb.appendformat</button>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" onclick="toCS()">SQL to C#</button>
+                <button type="button" class="btn btn-info" onclick="toCS()">SQL to C#</button>
             </div>
         </form>
         <label>Output:</label>
