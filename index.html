@@ -85,7 +85,7 @@
             let output = input.split(/\r\n|\r|\n/g).map((line, ind) => {
                 console.log(line);
                 if (ind) {
-                    return `${variable} &= "${line} "`
+                    return `${variable} &= " ${line} "`
                 }
                 return `${variable} = "${line} "`
             }).join("\r\n")
@@ -98,7 +98,7 @@
             let output = input.split(/\r\n|\r|\n/g).map((line, ind) => {
                 console.log(line);
                 if (ind) {
-                    return `${variable} += "${line} ";`
+                    return `${variable} += " ${line} ";`
                 }
                 return `${variable} = "${line} ";`
             }).join("\r\n")
